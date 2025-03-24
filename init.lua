@@ -1,6 +1,6 @@
 --[[
 
-=====================================================================
+kjj s/====================================================================
 ==================== READ THIS BEFORE CONTINUING ====================
 =====================================================================
 ========                                    .-----.          ========
@@ -171,6 +171,9 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- Save file
 vim.keymap.set({ 'i', 'x', 'n', 's' }, '<C-s>', '<cmd>w<cr><esc>', { desc = 'Save file' })
 
+-- TODO: Add a pop-up window when I open a script and ask me if I want to run copilot
+-- Currently the copilot plugin is conflicting a bit with the completion engine, but not too much so I can live with it for now
+--
 -- Accept copilot completion
 vim.keymap.set('i', '<C-y>', 'copilot#Accept("\\<CR>")', {
   expr = true,
@@ -179,8 +182,10 @@ vim.keymap.set('i', '<C-y>', 'copilot#Accept("\\<CR>")', {
 })
 vim.g.copilot_no_tab_map = true
 
-vim.keymap.set('i', '<C-Right>', 'copilot#Next', { desc = 'Next copilot completion' })
-vim.keymap.set('i', '<C-Left>', 'copilot-next', { desc = 'Next copilot completion' })
+-- Next and previous copilot completion
+--TODO: Fix this
+--vim.keymap.set('i', '<C-Right>', 'copilot.next', { desc = 'Next copilot completion' })
+--vim.keymap.set('i', '<C-Left>', 'copilot-next', { desc = 'Next copilot completion' })
 
 -- Open parent dir
 vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
@@ -211,8 +216,15 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+-- Resize windows with CTRL+<hjkl>
+-- TODO: Add a way to resize multiple times by only typing Ctrl+w once
+vim.keymap.set('n', '<C-w>+', '<cmd>horizontal resize +10<CR>', { desc = 'Increase current window height by 10' })
+vim.keymap.set('n', '<C-w>-', '<cmd>horizontal resize -10<CR>', { desc = 'Decrease current window height by 10' })
+vim.keymap.set('n', '<C-w>>', '<cmd>vertical resize +10<CR>', { desc = 'Increase current window width by 10' })
+vim.keymap.set('n', '<C-w><', '<cmd>vertical resize -10<CR>', { desc = 'Decrease current window width by 10' })
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
+--
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
@@ -881,7 +893,6 @@ require('lazy').setup({
       --  - filetypes (table): Override the default list of associated filetypes for the server
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
-      --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         clangd = {},
         -- gopls = {},
@@ -895,7 +906,37 @@ require('lazy').setup({
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
         --
-        omnisharp_mono = {},
+        omnisharp = {
+          cmd = {
+            'omnisharp',
+            -- '-s',
+            -- require('custom.lspconfig.util').get_root_dir(vim.fn.bufnr()),
+            '-z',
+            '--hostPID',
+            tostring(vim.fn.getpid()),
+            '--encoding',
+            'utf-8',
+            '--languageserver',
+          },
+          settings = {
+            FormattingOptions = {
+              EnableEditorConfigSupport = false,
+              OrganizeImports = true,
+            },
+            RoslynExtensionsOptions = {
+              EnableAnalyzersSupport = false,
+              EnableImportCompletion = true,
+              AnalyzeOpenDocumentsOnly = false,
+            },
+            Sdk = {
+              IncludePrereleases = true,
+            },
+            MsBuild = {
+              LoadProjectsOnDemand = false,
+              EnablePackageAutoRestore = true,
+            },
+          },
+        },
 
         lua_ls = {
           -- cmd = { ... },
@@ -986,11 +1027,12 @@ require('lazy').setup({
         -- Conform can also run multiple formatters sequentially
         python = { 'isort', 'black' },
 
-        c_sharp = { 'csharpier' },
+        -- cs = { 'csharpier'},
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
         -- Use the "*" filetype to run formatters on all filetypes.
+        -- Doesn't really work for c#, but perfect for python
         ['*'] = { 'codespell' },
         -- Use the "_" filetype to run formatters on filetypes that don't
         -- have other formatters configured.
@@ -1041,7 +1083,6 @@ require('lazy').setup({
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
-
       cmp.setup {
         snippet = {
           expand = function(args)
@@ -1188,7 +1229,23 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'c_sharp', 'python', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'c_sharp',
+        'python',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        'json',
+        'yaml',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {

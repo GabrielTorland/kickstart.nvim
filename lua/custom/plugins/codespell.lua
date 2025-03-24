@@ -1,0 +1,5 @@
+return {
+  {
+    'codespell-project/codespell',
+  },
+}
