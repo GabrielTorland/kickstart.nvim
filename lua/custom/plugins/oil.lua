@@ -16,6 +16,7 @@ return {
       'size',
       'mtime',
     },
+    -- TODO: Update keymaps
     keymaps = {
       ['g?'] = { 'actions.show_help', mode = 'n' },
       ['<CR>'] = 'actions.select',

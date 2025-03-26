@@ -1,5 +1,0 @@
-return {
-  {
-    'codespell-project/codespell',
-  },
-}

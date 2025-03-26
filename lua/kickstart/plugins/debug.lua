@@ -24,6 +24,8 @@ return {
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
     'NicholasMata/nvim-dap-cs',
+    'microsoft/debugpy',
+    'mfussenegger/nvim-dap-python',
   },
   keys = {
     -- Basic debugging keymaps, feel free to change to your liking!
@@ -35,20 +37,21 @@ return {
       desc = 'Debug: Start/Continue',
     },
     {
-      '<F1>',
+      '<F11>',
       function()
         require('dap').step_into()
       end,
       desc = 'Debug: Step Into',
     },
     {
-      '<F2>',
+      '<F10>',
       function()
         require('dap').step_over()
       end,
       desc = 'Debug: Step Over',
     },
     {
+      -- TODO: Change me
       '<F3>',
       function()
         require('dap').step_out()
@@ -56,7 +59,7 @@ return {
       desc = 'Debug: Step Out',
     },
     {
-      '<leader>b',
+      '<F9>',
       function()
         require('dap').toggle_breakpoint()
       end,
@@ -97,6 +100,7 @@ return {
         -- Update this to ensure that you have the debuggers for the langs you want
         'delve',
         'netcoredbg',
+        'debugpy',
       },
     }
 
@@ -162,5 +166,7 @@ return {
         path = 'netcoredbg',
       },
     }
+    -- Can also be set to use venv by specifying executable path here
+    require('dap-python').setup 'python3'
   end,
 }

@@ -897,6 +897,9 @@ require('lazy').setup({
         clangd = {},
         -- gopls = {},
         pyright = {},
+        black = {},
+        isort = {},
+        codespell = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -925,7 +928,7 @@ require('lazy').setup({
             },
             RoslynExtensionsOptions = {
               EnableAnalyzersSupport = false,
-              EnableImportCompletion = true,
+              EnableImportCompletion = false,
               AnalyzeOpenDocumentsOnly = false,
             },
             Sdk = {
@@ -1018,7 +1021,7 @@ require('lazy').setup({
           lsp_format_opt = 'fallback'
         end
         return {
-          timeout_ms = 1000,
+          timeout_ms = 500,
           lsp_format = lsp_format_opt,
         }
       end,
@@ -1026,6 +1029,7 @@ require('lazy').setup({
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
         python = { 'isort', 'black' },
+        json = { 'fixjson', 'jq' },
 
         -- cs = { 'csharpier'},
         --
@@ -1065,6 +1069,7 @@ require('lazy').setup({
             'rafamadriz/friendly-snippets',
             config = function()
               require('luasnip.loaders.from_vscode').lazy_load()
+              require('luasnip.loaders.from_vscode').lazy_load { paths = { './snippets/' } }
             end,
           },
         },
